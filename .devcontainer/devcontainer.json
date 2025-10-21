@@ -15,8 +15,7 @@
     },
     "6274": {
       "label": "MCP Inspector UI",
-      "visibility": "public",
-      "onAutoForward": "silent"
+      "visibility": "public"
     }
   },
   "customizations": {

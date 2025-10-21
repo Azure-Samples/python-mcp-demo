@@ -1,0 +1,14 @@
+{
+  "servers": {
+    "expenses-mcp": {
+      "type": "stdio",
+      "command": "uv",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "run",
+        "main.py"
+      ]
+    }
+  },
+  "inputs": []
+}

@@ -16,9 +16,8 @@ The Model Context Protocol (MCP) is an open standard that enables LLMs to connec
   - [Testing with MCP Inspector](#testing-with-mcp-inspector)
 - [Contributing](#contributing)
 
-## Getting Started
 
-### Environment Setup
+## Environment Setup
 
 #### 1. GitHub Codespaces 
 
@@ -43,9 +42,9 @@ If you prefer a plain local environment, use **uv** for dependency management:
 uv sync
 ```
 
-### Use MCP Server with  GitHub Copilot Chat
+## Using the Expenses MCP Server
 
-### Run the MCP Server in VS Code
+### Run the MCP Server in VS Code with GitHub Copilot (Codespace/Local Dev Container/Local)
 
 1. Open `.vscode/mcp.json` in the editor
 1. Click the **Start** button (▶) above the server name `expenses-mcp`
@@ -55,42 +54,44 @@ uv sync
 1. Ensure `expenses-mcp` is selected in the list of available tools
 1. Ask Copilot to invoke the tool:
    - "Use add_expense to record a $12 lunch today paid with visa"
-   - "Read the expenses resource"
 
 ### MCP Inspector
 
-The MCP Inspector is a browser-based visual testing and debugging tool for MCP servers.
+The MCP Inspector is a browser-based visual testing and debugging tool for MCP servers. At the moment it does not work great with non STDIO MCP Servers when working inside of a Codespace.
 
-#### Launch the MCP Inspector in GitHub Codespaces
+#### Launch the MCP Inspector and connect to STDIO MCP Server in GitHub Codespace
 
 1. Run the following command in the terminal:
    ```bash
    .devcontainer/launch-inspector-codespace.sh
    ```
-
 2. Note the **Inspector Proxy Address** and **Session Token** from the terminal output
 
 3. In the **Ports** view, set port **6277** to **PUBLIC** visibility
 
 4. Access the Inspector UI and configure:
-   - **Transport Type**: `SSE`
-   - **Inspector Proxy Address**: (from terminal output)
-   - **Proxy Session Token**: (from terminal output)
+   - **Transport Type**: `STDIO`
    - **Command**: `uv`
    - **Arguments**: `run main.py`
+   - Expand configuration area
+   - **Inspector Proxy Address**: (from terminal output)
+   - **Proxy Session Token**: (from terminal output)
 
-#### Launch the MCP Inspector inside of a Dev Container
+#### Launch the MCP Inspector and connect to STDIO MCP Server in VS Code and Dev Container
 
 1. Run the following command in the terminal:
    ```bash
    HOST=0.0.0.0 DANGEROUSLY_OMIT_AUTH=true npx -y @modelcontextprotocol/inspector
    ```
-2. Open `http://localhost:6274` in your browser
-3. The Inspector should now connect to your MCP server
+1. Open `http://localhost:6274` in your browser
+1. Access the Inspector UI and configure:
+   - **Transport Type**: `STDIO`
+   - **Command**: `uv`
+   - **Arguments**: `run main.py`
 
 > **Note:** `HOST=0.0.0.0` is required in devcontainer environments to bind the Inspector to all network interfaces, allowing proper communication between the UI and proxy server. `DANGEROUSLY_OMIT_AUTH=true` disables authentication - only use in trusted development environments.
 
-#### Launch the inspector locally without Dev Container:**
+#### Launch the inspector locally:**
 
 1. Run the following command in the terminal:
    ```bash
@@ -105,9 +106,8 @@ The MCP Inspector is a browser-based visual testing and debugging tool for MCP s
 
 You can attach the VS Code debugger to the running MCP server to set breakpoints and inspect code execution.
 
-### Debugging stdio server with GitHub Copilot
+### Debugging STDIO MCP server with GitHub Copilot in Codespace/Dev Container/locally
 
-To debug the stdio server (`main.py`) while using it with GitHub Copilot:
 
 1. Open `.vscode/mcp.json` in the editor
 
@@ -121,25 +121,21 @@ To debug the stdio server (`main.py`) while using it with GitHub Copilot:
 
 6. Set breakpoints in `main.py` and use the server from GitHub Copilot Chat. Breakpoints will be hit when tools are invoked.
 
-### Debugging HTTP server with MCP Inspector
+### Debugging HTTP MCP server with GitHub Copilot in Codespace/Dev Container/locally
 
-To debug the HTTP server (`main_http.py`) while testing with the MCP Inspector:
+1. Run the HTTP MCP Server in the terminal with `uv run -- python -m debugpy --listen 0.0.0.0:5678 main_http.py`
 
-1. Start the HTTP server with debugpy enabled:
-   ```bash
-   uv run -- python -m debugpy --listen 0.0.0.0:5678 main_http.py
-   ```
+1. Open `.vscode/mcp.json` in the editor
 
-2. In VS Code, open the Run and Debug panel (Ctrl+Shift+D / Cmd+Shift+D)
+1. Start the **expenses-mcp-debug** server (instead of expenses-mcp)
 
-3. Select **"Attach to MCP Server"** from the dropdown and click the play button (or press F5)
+1. In VS Code, open the Run and Debug panel (Ctrl+Shift+D / Cmd+Shift+D)
 
-4. Open the MCP Inspector UI and configure:
-   - **Transport Type**: `HTTP`
-   - **URL**: `http://localhost:8000`
-   - Click **Connect**
+1. Select **"Attach to MCP Server"** from the dropdown and click the play button (or press F5)
 
-5. Set breakpoints in `main_http.py` and test your tools from the Inspector UI. Breakpoints will be hit when you invoke tools.
+1. In GitHub Copilot Chat, make sure **expenses-mcp-debug** is selected in the tools menu
+
+1. Set breakpoints in `main_http.py` and use the server from GitHub Copilot Chat. Breakpoints will be hit when tools are invoked.
 
 ---
 

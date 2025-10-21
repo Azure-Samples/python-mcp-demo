@@ -74,7 +74,7 @@ The MCP Inspector is a browser-based visual testing and debugging tool for MCP s
 
 1. Run the following command in the terminal:
    ```bash
-   HOST=0.0.0.0 DANGEROUSLY_OMIT_AUTH=true npx @modelcontextprotocol/inspector uv run main.py
+   HOST=0.0.0.0 DANGEROUSLY_OMIT_AUTH=true npx -y @modelcontextprotocol/inspector uv run main.py
    ```
 2. Open `http://localhost:6274` in your browser
 3. The Inspector should now connect to your MCP server

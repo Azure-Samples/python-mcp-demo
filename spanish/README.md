@@ -49,6 +49,7 @@ Ejecuta cualquier script con: `uv run <script_name>`
 - **basic_mcp_stdio.py** - MCP server con transporte stdio (útil para integración con VS Code / Copilot)
 - **langchainv1_mcp_http.py** - Agente LangChain que usa MCP tools
 - **agentframework_mcp_learn.py** - Integración con Microsoft Agent Framework y MCP
+- **langchainv1_mcp_github.py** - LangChain tool filtering demo con GitHub MCP (necesita `GITHUB_TOKEN`)
 
 ## Configuración del servidor MCP
 

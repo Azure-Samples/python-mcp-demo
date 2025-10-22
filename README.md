@@ -48,6 +48,8 @@ Run any script with: `uv run <script_name>`
 - **basic_mcp_http.py** - MCP server with HTTP transport on port 8000
 - **basic_mcp_stdio.py** - MCP server with stdio transport for VS Code integration
 - **langchainv1_mcp_http.py** - LangChain agent with MCP integration
+- **langchainv1_mcp_github.py** - LangChain tool filtering demo with GitHub MCP (requires `GITHUB_TOKEN`)
+- **openai_agents_tool_filtering.py** - OpenAI Agents SDK tool filtering demo with Microsoft Learn MCP
 - **agentframework_mcp_learn.py** - Microsoft Agent Framework integration with MCP
 
 ## MCP Server Configuration

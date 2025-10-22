@@ -4,19 +4,31 @@ import asyncio
 import logging
 import os
 
-
+from azure.identity import DefaultAzureCredential
 from dotenv import load_dotenv
 from rich import print
 from rich.logging import RichHandler
+
 from agent_framework import ChatAgent, MCPStreamableHTTPTool
 from agent_framework.azure import AzureOpenAIChatClient
 from agent_framework.openai import OpenAIChatClient
-from azure.identity import DefaultAzureCredential
 
-logging.basicConfig(level=logging.WARNING, format="%(message)s", datefmt="[%X]", handlers=[RichHandler()])
+# Configure logging
+logging.basicConfig(
+    level=logging.WARNING,
+    format="%(message)s",
+    datefmt="[%X]",
+    handlers=[RichHandler()]
+)
 logger = logging.getLogger("learn_mcp_lang")
 
+# Load environment variables
 load_dotenv(override=True)
+
+# Constants
+LEARN_MCP_URL = "https://learn.microsoft.com/api/mcp"
+
+# Configure chat client based on API_HOST
 API_HOST = os.getenv("API_HOST", "github")
 
 if API_HOST == "azure":
@@ -44,11 +56,17 @@ else:
     )
 
 
-async def http_mcp_example():
+async def http_mcp_example() -> None:
+    """
+    Demonstrate MCP integration with Microsoft Learn documentation.
+    
+    Creates an agent that can answer questions about Microsoft documentation
+    using the Microsoft Learn MCP server.
+    """
     async with (
         MCPStreamableHTTPTool(
             name="Microsoft Learn MCP",
-            url="https://learn.microsoft.com/api/mcp",
+            url=LEARN_MCP_URL,
             headers={"Authorization": "Bearer your-token"},
         ) as mcp_server,
         ChatAgent(
@@ -57,11 +75,10 @@ async def http_mcp_example():
             instructions="You help with Microsoft documentation questions.",
         ) as agent,
     ):
-        result = await agent.run(
-            "How to create an Azure storage account using az cli?",
-            tools=mcp_server
-        )
+        query = "How to create an Azure storage account using az cli?"
+        result = await agent.run(query, tools=mcp_server)
         print(result)
+
 
 if __name__ == "__main__":
     asyncio.run(http_mcp_example())

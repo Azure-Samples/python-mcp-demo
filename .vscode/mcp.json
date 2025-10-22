@@ -6,7 +6,7 @@
       "cwd": "${workspaceFolder}",
       "args": [
         "run",
-        "main.py"
+        "basic_mcp_stdio.py"
       ],
       "env": {
         "PYTHONUNBUFFERED": "1"
@@ -24,7 +24,7 @@
         "debugpy",
         "--listen",
         "0.0.0.0:5678",
-        "main.py"
+        "basic_mcp_stdio.py"
       ],
       "env": {
         "PYTHONUNBUFFERED": "1"
@@ -33,6 +33,25 @@
     "expenses-mcp-http": {
       "type": "http",
       "url": "http://localhost:8000/mcp"
+    },
+    "expenses-mcp-http-debug": {
+      "type": "stdio",
+      "command": "uv",
+      "cwd": "${workspaceFolder}",
+      "args": [
+        "run",
+        "--",
+        "python",
+        "-m",
+        "debugpy",
+        "--listen",
+        "0.0.0.0:5679",
+        "--wait-for-client",
+        "basic_mcp_http.py"
+      ],
+      "env": {
+        "PYTHONUNBUFFERED": "1"
+      }
     }
   },
   "inputs": []

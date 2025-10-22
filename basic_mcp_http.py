@@ -101,29 +101,37 @@ async def get_expenses_data():
 
 
 @mcp.prompt
-def create_expense_prompt(
-  date: str, 
-  amount: float, 
-  category: str, 
-  description: str, 
-  payment_method: str
+def analyze_spending_prompt(
+  category: str | None = None,
+  start_date: str | None = None,
+  end_date: str | None = None
 ) -> str:
+    """Generate a prompt to analyze spending patterns with optional filters."""
     
-  """Generate a prompt to add a new expense using the add_expense tool."""
-
-  logger.info(f"Expense prompt created for: {description}")
-
-  return f"""
-      Please add the following expense:
-        - Date: {date}
-        - Amount: ${amount}
-        - Category: {category}
-        - Description: {description}
-        - Payment Method: {payment_method}
-      Use the `add_expense` tool to record this transaction.
-      """
+    filters = []
+    if category:
+        filters.append(f"Category: {category}")
+    if start_date:
+        filters.append(f"From: {start_date}")
+    if end_date:
+        filters.append(f"To: {end_date}")
+    
+    filter_text = f" ({', '.join(filters)})" if filters else ""
+    
+    return f"""
+    Please analyze my spending patterns{filter_text} and provide:
+    
+    1. Total spending breakdown by category
+    2. Average daily/weekly spending
+    3. Most expensive single transaction
+    4. Payment method distribution
+    5. Spending trends or unusual patterns
+    6. Recommendations for budget optimization
+    
+    Use the expense data to generate actionable insights.
+    """
 
 
 if __name__ == "__main__":
-  logger.info("MCP Expenses server starting")
-  mcp.run()
+  logger.info("MCP Expenses server starting (HTTP mode on port 8000)")
+  mcp.run(transport="http", host="0.0.0.0", port=8000)

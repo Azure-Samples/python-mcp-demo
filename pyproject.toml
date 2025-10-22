@@ -13,5 +13,6 @@ dependencies = [
     "langchain==1.0.0a5",
     "langchain-openai>=1.0.1",
     "langchain-mcp-adapters>=0.1.11",
-    "azure-ai-inference==1.0.0b9",
+    "azure-ai-agents>=1.1.0",
+    "agent-framework>=1.0.0b251016",
 ]

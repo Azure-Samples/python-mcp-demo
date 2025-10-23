@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_mcp_adapters.client import MultiServerMCPClient
-from langchain_openai import AzureChatOpenAI, ChatOpenAI
+from langchain_openai import ChatOpenAI
 from pydantic import SecretStr
 from rich.logging import RichHandler
 
@@ -36,11 +36,10 @@ if API_HOST == "azure":
         azure.identity.DefaultAzureCredential(),
         AZURE_COGNITIVE_SERVICES_SCOPE
     )
-    base_model = AzureChatOpenAI(
-        azure_endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"),
-        azure_deployment=os.environ.get("AZURE_OPENAI_CHAT_DEPLOYMENT"),
-        api_version=os.environ.get("AZURE_OPENAI_VERSION"),
-        azure_ad_token_provider=token_provider,
+    base_model = ChatOpenAI(
+        model=os.environ.get("AZURE_OPENAI_CHAT_DEPLOYMENT"),
+        base_url=os.environ["AZURE_OPENAI_ENDPOINT"] + "/openai/v1/",
+        api_key=token_provider,
     )
 elif API_HOST == "github":
     base_model = ChatOpenAI(

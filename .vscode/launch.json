@@ -2,49 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch MCP HTTP Server (Debug)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/basic_mcp_http.py",
-      "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "PYTHONUNBUFFERED": "1"
-      }
-    },
-    {
-      "name": "Launch MCP stdio Server (Debug)",
-      "type": "debugpy",
-      "request": "launch",
-      "program": "${workspaceFolder}/basic_mcp_stdio.py",
-      "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}",
-      "env": {
-        "PYTHONUNBUFFERED": "1"
-      }
-    },
-    {
       "name": "Attach to MCP Server (stdio)",
       "type": "debugpy",
       "request": "attach",
       "connect": {
         "host": "localhost",
         "port": 5678
-      },
-      "pathMappings": [
-        {
-          "localRoot": "${workspaceFolder}",
-          "remoteRoot": "${workspaceFolder}"
-        }
-      ]
-    },
-    {
-      "name": "Attach to MCP Server (HTTP)",
-      "type": "debugpy",
-      "request": "attach",
-      "connect": {
-        "host": "localhost",
-        "port": 5679
       },
       "pathMappings": [
         {

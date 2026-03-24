@@ -56,27 +56,27 @@ else:
 # --- Main Agent Logic ---
 async def http_mcp_example() -> None:
     """Run an agent connected to the local expenses MCP server."""
+    try:
+        async with (
+            MCPStreamableHTTPTool(name="Expenses MCP Server", url=MCP_SERVER_URL) as mcp_server,
+            Agent(
+                client=client,
+                name="Expenses Agent",
+                instructions=f"You help users to log expenses. Today's date is {datetime.now().strftime('%Y-%m-%d')}.",
+                tools=[mcp_server],
+            ) as agent,
+        ):
+            user_query = "yesterday I bought a laptop for $1200 using my visa."
+            result = await agent.run(user_query)
+            print(result.text)
 
-    async with (
-        MCPStreamableHTTPTool(name="Expenses MCP Server", url=MCP_SERVER_URL) as mcp_server,
-        Agent(
-            client=client,
-            name="Expenses Agent",
-            instructions=f"You help users to log expenses. Today's date is {datetime.now().strftime('%Y-%m-%d')}.",
-            tools=[mcp_server],
-        ) as agent,
-    ):
-        user_query = "yesterday I bought a laptop for $1200 using my visa."
-        result = await agent.run(user_query)
-        print(result.text)
-
-        # Keep the worker alive in production
-        while RUNNING_IN_PRODUCTION:
-            await asyncio.sleep(60)
-            logger.info("Worker still running...")
-
-    if async_credential:
-        await async_credential.close()
+            # Keep the worker alive in production
+            while RUNNING_IN_PRODUCTION:
+                await asyncio.sleep(60)
+                logger.info("Worker still running...")
+    finally:
+        if async_credential:
+            await async_credential.close()
 
 
 if __name__ == "__main__":

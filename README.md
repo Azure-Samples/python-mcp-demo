@@ -202,10 +202,10 @@ This project includes example agents in the [`agents/`](agents/) directory that 
 
 | File | Description |
 | ---- | ----------- |
-| [agents/agentframework_learn.py](agents/agentframework_learn.py) | Microsoft Agent Framework integration with MCP |
 | [agents/agentframework_http.py](agents/agentframework_http.py) | Microsoft Agent Framework integration with local Expenses MCP server |
-| [agents/langchainv1_http.py](agents/langchainv1_http.py) | LangChain agent with MCP integration |
-| [agents/langchainv1_github.py](agents/langchainv1_github.py) | LangChain tool filtering demo with GitHub MCP (requires `GITHUB_TOKEN`) |
+| [agents/agentframework_learn.py](agents/agentframework_learn.py) | Microsoft Agent Framework integration with remote Learn MCP server |
+| [agents/langchainv1_http.py](agents/langchainv1_http.py) | LangChain agent with local Expenses MCP server |
+| [agents/langchainv1_github.py](agents/langchainv1_github.py) | LangChain tool-filtering agent with remote GitHub MCP (requires `GITHUB_TOKEN`) |
 
 **To run an agent:**
 

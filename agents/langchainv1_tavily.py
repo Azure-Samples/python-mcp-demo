@@ -7,6 +7,7 @@ to search the web and answer questions with relevant links.
 import asyncio
 import logging
 import os
+from urllib.parse import urlencode
 
 import azure.identity
 from dotenv import load_dotenv
@@ -54,13 +55,13 @@ else:
 
 async def run_agent() -> None:
     """Run a Tavily-backed research agent via MCP tools."""
-    tavily_key = os.environ["TAVILY_API_KEY"]
+    tavily_key = os.environ["TAVILY_API_KEY"].strip()
+    tavily_url = f"https://mcp.tavily.com/mcp/?{urlencode({'tavilyApiKey': tavily_key})}"
     client = MultiServerMCPClient(
         {
             "tavily": {
-                "url": "https://mcp.tavily.com/mcp/",
+                "url": tavily_url,
                 "transport": "streamable_http",
-                "headers": {"Authorization": f"Bearer {tavily_key}"},
             }
         }
     )

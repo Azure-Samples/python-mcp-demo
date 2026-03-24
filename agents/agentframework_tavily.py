@@ -1,11 +1,11 @@
 import asyncio
 import logging
 import os
+from urllib.parse import urlencode
 
-from agent_framework import ChatAgent, MCPStreamableHTTPTool
-from agent_framework.azure import AzureOpenAIChatClient
+from agent_framework import Agent, MCPStreamableHTTPTool
 from agent_framework.openai import OpenAIChatClient
-from azure.identity import DefaultAzureCredential
+from azure.identity.aio import DefaultAzureCredential, get_bearer_token_provider
 from dotenv import load_dotenv
 from rich import print
 from rich.logging import RichHandler
@@ -20,18 +20,20 @@ load_dotenv(override=True)
 
 # Configure chat client based on API_HOST
 API_HOST = os.getenv("API_HOST", "github")
+async_credential = None
 if API_HOST == "azure":
-    client = AzureOpenAIChatClient(
-        credential=DefaultAzureCredential(),
-        deployment_name=os.environ.get("AZURE_OPENAI_CHAT_DEPLOYMENT"),
-        endpoint=os.environ.get("AZURE_OPENAI_ENDPOINT"),
-        api_version=os.environ.get("AZURE_OPENAI_VERSION"),
+    async_credential = DefaultAzureCredential()
+    token_provider = get_bearer_token_provider(async_credential, "https://cognitiveservices.azure.com/.default")
+    client = OpenAIChatClient(
+        base_url=f"{os.environ['AZURE_OPENAI_ENDPOINT']}/openai/v1/",
+        api_key=token_provider,
+        model_id=os.environ["AZURE_OPENAI_CHAT_DEPLOYMENT"],
     )
 elif API_HOST == "github":
     client = OpenAIChatClient(
         base_url="https://models.github.ai/inference",
         api_key=os.environ["GITHUB_TOKEN"],
-        model_id=os.getenv("GITHUB_MODEL", "openai/gpt-4o"),
+        model_id=os.getenv("GITHUB_MODEL", "openai/gpt-4.1-mini"),
     )
 elif API_HOST == "ollama":
     client = OpenAIChatClient(
@@ -41,28 +43,33 @@ elif API_HOST == "ollama":
     )
 else:
     client = OpenAIChatClient(
-        api_key=os.environ.get("OPENAI_API_KEY"), model_id=os.environ.get("OPENAI_MODEL", "gpt-4o")
+        api_key=os.environ.get("OPENAI_API_KEY"), model_id=os.environ.get("OPENAI_MODEL", "gpt-4.1-mini")
     )
 
 
-async def http_mcp_example():
+async def http_mcp_example() -> None:
     """
     Creates an agent that can search the web using the Tavily MCP server.
     """
 
-    tavily_key = os.environ["TAVILY_API_KEY"]
-    headers = {"Authorization": f"Bearer {tavily_key}"}
+    tavily_key = os.environ["TAVILY_API_KEY"].strip()
+    tavily_url = f"https://mcp.tavily.com/mcp/?{urlencode({'tavilyApiKey': tavily_key})}"
+
     async with (
-        MCPStreamableHTTPTool(name="Tavily MCP", url="https://mcp.tavily.com/mcp/", headers=headers) as mcp_server,
-        ChatAgent(
-            chat_client=client,
+        MCPStreamableHTTPTool(name="Tavily MCP", url=tavily_url) as mcp_server,
+        Agent(
+            client=client,
             name="WebSearchAgent",
             instructions="You search the web with Tavily and provide concise answers with links.",
+            tools=[mcp_server],
         ) as agent,
     ):
         query = "What's new in Python 3.14? Include relevant links."
-        result = await agent.run(query, tools=mcp_server)
-        print(result)
+        result = await agent.run(query)
+        print(result.text)
+
+    if async_credential:
+        await async_credential.close()
 
 
 if __name__ == "__main__":

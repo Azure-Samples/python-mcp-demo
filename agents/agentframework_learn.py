@@ -52,21 +52,23 @@ async def http_mcp_example() -> None:
     using the Microsoft Learn MCP server.
     """
 
-    async with (
-        MCPStreamableHTTPTool(name="Microsoft Learn MCP", url="https://learn.microsoft.com/api/mcp") as mcp_server,
-        Agent(
-            client=client,
-            name="DocsAgent",
-            instructions="You help with Microsoft documentation questions.",
-            tools=[mcp_server],
-        ) as agent,
-    ):
-        query = "How to create an Azure storage account using az cli?"
-        result = await agent.run(query)
-        print(result.text)
+    try:
+        async with (
+            MCPStreamableHTTPTool(name="Microsoft Learn MCP", url="https://learn.microsoft.com/api/mcp") as mcp_server,
+            Agent(
+                client=client,
+                name="DocsAgent",
+                instructions="You help with Microsoft documentation questions.",
+                tools=[mcp_server],
+            ) as agent,
+        ):
+            query = "How to create an Azure storage account using az cli?"
+            result = await agent.run(query)
+            print(result.text)
 
-    if async_credential:
-        await async_credential.close()
+    finally:
+        if async_credential:
+            await async_credential.close()
 
 
 if __name__ == "__main__":
